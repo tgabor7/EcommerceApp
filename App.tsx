@@ -1,22 +1,27 @@
 import { StatusBar } from 'expo-status-bar';
-import React from 'react';
+import React, { useState } from 'react';
 import { Platform, SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import ModalComponent from './components/ModalComponent';
 import NavigationBar from './components/NavigationBar';
+import ProductContext from './components/ProductContext';
+import { Product } from './components/ProductItem';
 import ProductList from './components/ProductList';
 import ProductPage from './components/ProductPage';
 
 export default function App() {
 
-
   return (<View>
-
     <View style={styles.container}>
       <View style={styles.navbar}>
         <NavigationBar />
       </View>
       <StatusBar style="auto" />
-      <ProductList></ProductList>
-      <ProductPage />
+      <ProductContext>
+        <ProductList />
+        <ModalComponent >
+          <ProductPage />
+        </ModalComponent>
+      </ProductContext>
     </View>
   </View>
   );

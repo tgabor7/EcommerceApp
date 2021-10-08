@@ -1,20 +1,20 @@
-import { Dimensions, FlatList, Platform, StyleSheet, Text, View } from "react-native"
-import React, { useEffect, useState } from "react"
+import { Dimensions, FlatList, Platform, StyleSheet, Text, TouchableOpacity, View } from "react-native"
+import React, { useContext, useEffect, useState } from "react"
 import ProductItem, { Product } from "./ProductItem"
-import usePage from "../hooks/usePage"
+import ProductContext, { useProduct } from "./ProductContext"
 
-export default ()=>{
+interface Props{
+}
+
+export default (props: Props)=>{
     
-    const [page, setPage] = usePage()
-
-
     const [items, setItems] = useState<Array<Product>>([
         {name: 'ez', price: 10, available: true, rating: 4, key: '0', description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sit amet libero nec arcu pellentesque ornare. Fusce tristique purus lectus, et varius odio pellentesque et. Pellentesque eget augue tempor est imperdiet lobortis vitae non nisi. Ut metus nunc, hendrerit id lectus ultricies, pulvinar faucibus erat. Vestibulum pretium lorem mauris, sed mattis elit semper a. Sed varius porta dignissim. Duis neque massa, volutpat sit amet nisi ac, vulputate pretium mi. Phasellus et ex in urna sodales pharetra ut nec enim. Cras id libero mi.'},
-        {name: 'ez', price: 0, available: true, rating: 4.5, key: '1'},
-        {name: 'ez', price: 0, available: true, rating: 4, key: '2'},
-        {name: 'ez', price: 0, available: true, rating: 4, key: '3'},
-        {name: 'ez', price: 0, available: true, rating: 4, key: '4'},
-        {name: 'ez', price: 0, available: true, rating: 4, key: '5'},
+        {name: 'ez', price: 12, available: true, rating: 4.5, key: '1'},
+        {name: 'ez', price: 1, available: true, rating: 4, key: '2'},
+        {name: 'ez', price: 3, available: true, rating: 4, key: '3'},
+        {name: 'ez', price: 6, available: true, rating: 4, key: '4'},
+        {name: 'ez', price: 2, available: true, rating: 4, key: '5'},
         {name: 'ez', price: 0, available: true, rating: 4, key: '6'},
         {name: 'ez', price: 0, available: true, rating: 4, key: '7'},
         {name: 'ez', price: 0, available: true, rating: 4, key: '8'},
@@ -35,18 +35,18 @@ export default ()=>{
     ])
     useEffect(()=>{
         let tmp = []
-
+        console.log('item list rerendered')
         for(let i = 0;i<1000;i++){
-            tmp.push({name: 'ez', price: 0, available: true, rating: 4.5, key: i.toString(), description: 'awbdauiwbdiauwbdioauwhgdiauwzdgbiahwdiauwhdiauwhdiaugdaizwgdioawugdiaowgdoaiwzugd'})
+            tmp.push({name: 'ez', price: (i % 10), available: true, rating: 4.5, key: i.toString(), description: 'awbdauiwbdiauwbdioauwhgdiauwzdgbiahwdiauwhdiauwhdiaugdaizwgdioawugdiaowgdoaiwzugd'})
         }
         setItems(tmp)
-    },[page])
+    },[])
     
 
     return (<>
-        <View style={page === 0 ? styles.cards : styles.hidden}>
-            <FlatList contentContainerStyle={styles.container} windowSize={page === 0 ? 5 : 0} maxToRenderPerBatch={5} initialNumToRender={5} keyExtractor={(item, index)=> {return index.toString()} }
-             data={items} renderItem={({item, index}) =><ProductItem handleClick={()=>{setPage(1)}} product={item} index={index}></ProductItem>}></FlatList>
+        <View style={styles.cards}>
+            <FlatList contentContainerStyle={styles.container} windowSize={5} maxToRenderPerBatch={5} initialNumToRender={5} keyExtractor={(item, index)=> {return index.toString()} }
+             data={items} renderItem={({item, index}) =><ProductItem product={item} index={index}></ProductItem>}></FlatList>
         </View>
     </>)
 }
@@ -54,7 +54,6 @@ const styles = StyleSheet.create({
     cards: {
         marginLeft: 'auto',
         marginRight: 'auto',
-        overflow: 'hidden',
         width: '100%',
         height: Dimensions.get('window').height,
         marginTop: 0
