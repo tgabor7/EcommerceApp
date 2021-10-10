@@ -2,6 +2,7 @@ import { faArrowDown, faArrowUp } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome"
 import React, { useDebugValue } from "react"
 import { StyleProp, StyleSheet, TextInput, TouchableOpacity, View, ViewStyle } from "react-native"
+import color from '../assets/style.json'
 
 interface Props{
     style: StyleProp<ViewStyle>
@@ -38,7 +39,7 @@ export default (props: Props) => {
 
 const styles = StyleSheet.create({
     button: {
-        backgroundColor: '#303',
+        backgroundColor: color.theme.secondary_color,
         margin: 'auto',
         width: 50,
     },

@@ -2,10 +2,11 @@ import React, { useEffect, useRef, useState } from "react"
 import { Animated, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import NumberInput from "./NumberInput"
 import { useProduct } from "./ProductContext"
-import { Product } from "./ProductItem"
+import { addToCart, Product } from "./ProductItem"
 import { styles } from './ProductItem'
 
 interface Props {
+    navigation: any
 }
 
 const getTotal = (price: number, amount: any) => {
@@ -18,29 +19,30 @@ export default (props: Props) => {
 
     const context = useProduct()
 
-    useEffect(() => {
-        setAmount('1')
-    }, [context.show])
+    useEffect(()=>{
+        if(context.current) props.navigation.setOptions({title: context.current?.product.name})
+    }, [context.current])
 
     return (<>
         <View>
-            <Text style={[pageStyles.text, { marginRight: 'auto' }]}>{context.current?.name}</Text>
             <View style={pageStyles.image}></View>
             
-            <ScrollView>
-                <Text style={pageStyles.description}>{context.current?.description}</Text>
+            <ScrollView style={{height: 100}}>
+                <Text style={pageStyles.description}>{context.current?.product.description}</Text>
             </ScrollView>
             
             <View style={{flexDirection: 'row'}}>
                 <View style={{ flexDirection: 'row', flex: 2 }}>
                     <Text style={[pageStyles.text, { flex: 1, marginTop: 'auto', marginBottom: 'auto' }]}>Amount: </Text>
                     <NumberInput style={{ flex:1, marginLeft: 'auto', marginRight: 10 }} value={amount} changeValue={setAmount} />
-                    <Text style={[pageStyles.text, { flex: 1, marginTop: 'auto', marginBottom: 'auto' }]}> {'x ' + context.current?.price + ' $'}</Text>
+                    <Text style={[pageStyles.text, { flex: 1, marginTop: 'auto', marginBottom: 'auto' }]}> {'x ' + context.current?.product.price + ' $'}</Text>
                 </View>
                 <View style={{flexDirection: 'column', flex: 1}}>
-                <Text style={pageStyles.text}>Total: <Text style={[pageStyles.text, pageStyles.bold]}>{context.current ? getTotal(context.current.price, amount) : 'No data'} $ </Text></Text>
+                <Text style={pageStyles.text}>Total: <Text style={[pageStyles.text, pageStyles.bold]}>{context.current ? getTotal(context.current.product.price, amount) : 'No data'} $ </Text></Text>
 
-                <TouchableOpacity style={styles.button}>
+                <TouchableOpacity style={styles.button} onPress={()=>{
+                    context.current ? addToCart(context.current.product, amount) : {}
+                }}>
                     <Text style={styles.addText}>Add to cart</Text>
                 </TouchableOpacity>
                 </View>

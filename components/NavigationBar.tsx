@@ -3,7 +3,11 @@ import { Animated, Dimensions, Platform, StyleSheet, Text, TextInput, Touchable,
 import { faShoppingBasket, faAsterisk, faSearch } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome"
 
-export default () => {
+interface Props{
+    openShop: ()=> void
+}
+
+export default (props : Props) => {
 
     const [focus, setFocus] = useState(false)
 
@@ -47,7 +51,7 @@ export default () => {
                 inputRange: [1,1.1],
                 outputRange: [0, 60]
             })}] }:{}]}>
-                <TouchableOpacity style={styles.buttonStyle}>
+                <TouchableOpacity style={styles.buttonStyle} onPress={props.openShop}>
                     <FontAwesomeIcon style={styles.iconStyle} icon={faShoppingBasket} size={32} />
                 </TouchableOpacity>
             </Animated.View>

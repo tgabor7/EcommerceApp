@@ -1,9 +1,10 @@
 import React, { useEffect } from "react"
-import { Dimensions, Modal, Platform, Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native"
+import { Alert, Dimensions, Modal, Platform, Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import AvailableComponent from "./AvailableComponent"
-import ModalComponent from "./ModalComponent"
-import ProductContext, { useProduct } from "./ProductContext"
+import ProductContext, { ProductRecord, useProduct } from "./ProductContext"
 import RatingComponent from "./RatingComponent"
+import AsyncStorage from "@react-native-async-storage/async-storage"
+import colors from '../assets/style.json'
 
 export interface Product {
     name: String
@@ -16,19 +17,55 @@ export interface Product {
 interface Props {
     product: Product
     index: any
+    navigation: any
 }
 
 const MAX_DESCRIPTION_LENGTH = 200
+
+const checkDuplicates = async (product: Product) => {
+    let json = await AsyncStorage.getItem('cart')
+    if (!json) return false
+    let data = JSON.parse(json)
+    if (data.find((e: ProductRecord) => product.key === e.product.key)) return true
+    return false
+}
+
+
+export const addToCart = async (product: Product, amount: number) => {
+    let is_duplicate = await checkDuplicates(product)
+    if (is_duplicate) {
+        Alert.alert('Failed', 'Item already in shopping cart!')
+        return
+    }
+    Alert.alert('Success', 'Added item to cart')
+    try {
+        let cartData = await AsyncStorage.getItem('cart')
+        let cart: any = []
+        if (cartData) {
+            cart = JSON.parse(cartData)
+        }
+
+        cart.push({ product: product, amount: amount })
+
+        await AsyncStorage.setItem(
+            'cart',
+            JSON.stringify(cart)
+        );
+    } catch (error) {
+        // Error saving data
+    }
+}
 
 export default (props: Props) => {
 
     const context = useProduct()
 
     return (<>
+
         <View style={styles.card}>
             <TouchableOpacity onPress={() => {
-                context.setShow ? context.setShow(true) : {}
-                context.setProduct ? context.setProduct(props.product) : {}
+                context.setProduct ? context.setProduct({ product: props.product, amount: 1 }) : ''
+                props.navigation.navigate('Product')
             }}>
                 <Text style={styles.name}>{props.product.name}</Text>
 
@@ -41,7 +78,11 @@ export default (props: Props) => {
                 </View>
             </TouchableOpacity>
             <Text style={styles.price}>{props.product.price + '$'}</Text>
-            <TouchableOpacity style={styles.button}>
+            <TouchableOpacity style={styles.button} onPress={() => {
+                addToCart(props.product, 1).then(() => {
+                    console.log('Product added to cart')
+                })
+            }}>
                 <Text style={styles.addText}>Add to cart</Text>
             </TouchableOpacity>
         </View>
@@ -92,7 +133,16 @@ export const styles = StyleSheet.create({
         margin: '5%',
         marginLeft: 'auto',
         marginRight: 'auto',
-        paddingBottom: 10
+        paddingBottom: 10,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+
+        elevation: 5,
     },
     price: {
         fontSize: 24,
@@ -113,7 +163,7 @@ export const styles = StyleSheet.create({
     },
     button: {
         margin: 5,
-        backgroundColor: '#303',
+        backgroundColor: colors.theme.secondary_color,
         marginLeft: 'auto',
         borderRadius: 5
 
@@ -121,7 +171,7 @@ export const styles = StyleSheet.create({
     addText: {
         color: '#fff',
         padding: 5,
-        fontSize: 24,
+        fontSize: 20,
     },
     image: {
         width: '100%',
