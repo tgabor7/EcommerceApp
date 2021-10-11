@@ -31,7 +31,7 @@ export default (props: Props)=>{
                 if(context.searchTerm) return p.name.includes(context.searchTerm)
                 return true
              })} renderItem={({item, index}) =><ProductItem navigation={props.navigation} product={item} index={index}></ProductItem>}></FlatList>
-        </View>:<ActivityIndicator size="large" />}
+        </View>:<ActivityIndicator style={{marginBottom: 'auto', marginTop: 'auto'}}size="large" color="#000"/>}
     </>)
 }
 const styles = StyleSheet.create({
