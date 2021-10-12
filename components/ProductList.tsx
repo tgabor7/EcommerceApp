@@ -1,4 +1,4 @@
-import { ActivityIndicator, Dimensions, FlatList, Platform, StyleSheet, Text, TouchableOpacity, View } from "react-native"
+import { ActivityIndicator, Dimensions, FlatList, Platform, RefreshControl, StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import React, { useContext, useEffect, useState } from "react"
 import ProductItem, { Product } from "./ProductItem"
 import ProductContext, { useProduct } from "./ProductContext"
@@ -12,9 +12,19 @@ export default (props: Props)=>{
     
     const [items, setItems] = useState<Array<Product>>()
 
-    const [data, loading] = useProductAPI()
+    const [data, loading, reload] = useProductAPI()
 
     const context = useProduct()
+
+    const [refreshing, setRefreshing] = useState<boolean>(false)
+
+    const onRefresh = React.useCallback(() => {
+        setRefreshing(true);
+        reload()
+        setInterval(()=>{
+            setRefreshing(false)
+        },2000)
+      }, []);
 
     useEffect(()=>{
         setItems(data)
@@ -22,16 +32,22 @@ export default (props: Props)=>{
 
     return (<>
         {!loading ? <View style={styles.cards}>
-            <Text style={{marginLeft: 'auto', marginRight: 'auto', marginTop: 5}}>{"Showing " + items?.filter((p:Product)=>{
+            <Text style={{marginLeft: 'auto', marginRight: 'auto', marginTop: 50}}>{"Showing " + items?.filter((p:Product)=>{
                 if(context.searchTerm) return p.name.includes(context.searchTerm)
                 return true
              }).length + " result(s)"}</Text>
-            <FlatList contentContainerStyle={styles.container} windowSize={5} maxToRenderPerBatch={5} initialNumToRender={5} keyExtractor={(item, index)=> {return index.toString()} }
+            <FlatList 
+            refreshControl={
+                <RefreshControl
+                  refreshing={refreshing}
+                  onRefresh={onRefresh}
+                />
+            }contentContainerStyle={styles.container} windowSize={5} maxToRenderPerBatch={5} initialNumToRender={5} keyExtractor={(item, index)=> {return index.toString()} }
              data={items?.filter((p:Product)=>{
                 if(context.searchTerm) return p.name.includes(context.searchTerm)
                 return true
              })} renderItem={({item, index}) =><ProductItem navigation={props.navigation} product={item} index={index}></ProductItem>}></FlatList>
-        </View>:<ActivityIndicator style={{marginBottom: 'auto', marginTop: 'auto'}}size="large" color="#000"/>}
+        </View>:<ActivityIndicator size="large" color="#000"/>}
     </>)
 }
 const styles = StyleSheet.create({

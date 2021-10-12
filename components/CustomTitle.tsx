@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
         backgroundColor: color.theme.secondary_color,
-        paddingTop: 20,
+        paddingTop: 25,
         borderBottomStartRadius: 10,
         borderBottomEndRadius: 10,
         shadowColor: "#000",

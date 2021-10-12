@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react"
-import { Animated, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native"
+import { Animated, BackHandler, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import NumberInput from "./NumberInput"
 import { useProduct } from "./ProductContext"
 import { addToCart, Product } from "./ProductItem"
@@ -19,8 +19,18 @@ export default (props: Props) => {
 
     const context = useProduct()
 
+    const handleBackPress = ()=>{
+        props.navigation.navigate('Main')
+        return true
+    }
+
     useEffect(()=>{
         if(context.current) props.navigation.setOptions({title: context.current?.product.name})
+
+        BackHandler.addEventListener('hardwareBackPress', handleBackPress)
+        return () => {
+            BackHandler.removeEventListener('hardwareBackPress', handleBackPress)
+        }
     }, [context.current])
 
     return (<>
