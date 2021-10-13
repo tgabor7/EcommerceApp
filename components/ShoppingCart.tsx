@@ -6,6 +6,7 @@ import { BackHandler, FlatList, Platform, ScrollView, StyleSheet, Text, Touchabl
 import { Product } from "./ProductItem";
 import color from '../assets/style.json'
 import { ProductRecord } from "./ProductContext";
+import { useFocusEffect } from "@react-navigation/core";
 
 interface Props {
     navigation: any
@@ -52,13 +53,13 @@ export default (props: Props) => {
         return prev + current.amount * current.product.price
     }
 
-    useEffect(() => {
+    useFocusEffect(() => {
         getCart()
         BackHandler.addEventListener('hardwareBackPress', handleBackPress)
         return () => {
             BackHandler.removeEventListener('hardwareBackPress', handleBackPress)
         }
-    }, [])
+    })
 
     return (<>
         {items?.length !== 0 ? <ScrollView>

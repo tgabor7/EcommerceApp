@@ -1,4 +1,4 @@
-import { faSearch, faShoppingBasket, faTimes } from "@fortawesome/free-solid-svg-icons"
+import { faBars, faSearch, faShoppingBasket, faTimes } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome"
 import React, { useEffect, useState } from "react"
 import { Animated, BackHandler, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native"
@@ -9,6 +9,7 @@ export default (props: any) => {
 
     const value = React.useRef(new Animated.Value(0)).current
     const input = React.useRef<TextInput>(null)
+
     const [searchInput, setSearchInput] = useState<string>()
 
     const context = useProduct()
@@ -34,10 +35,17 @@ export default (props: any) => {
         return () => {
             BackHandler.removeEventListener('hardwareBackPress', handleBackPress)
         }
-    },[])
+    }, [])
 
     return (<>
         <View style={styles.container}>
+            <View style={[styles.cart, { backgroundColor: color.theme.secondary_color }]}>
+                <TouchableOpacity onPress={()=>{
+                    props.openDrawer(true)
+                }}>
+                    <FontAwesomeIcon style={[styles.cartIcon]} icon={faBars} size={32} />
+                </TouchableOpacity>
+            </View>
             <View style={{ flex: 4 }}>
                 <Animated.View style={[styles.innerContainer, {
                     width:
@@ -47,7 +55,7 @@ export default (props: any) => {
                         })
                 }]}>
                     <TextInput ref={input} value={searchInput} onChangeText={
-                        t=>{
+                        t => {
                             setSearchInput(t)
                             context.setSearchTerm ? context.setSearchTerm(t) : {}
                         }
@@ -56,13 +64,13 @@ export default (props: any) => {
                     }} onBlur={() => {
                         focusOutAnimation.start()
                     }} style={styles.input} placeholder='Search'></TextInput>
-                
-                    {!context.searchTerm ? <FontAwesomeIcon style={styles.searchIcon} icon={faSearch} size={24} /> : 
-                    <TouchableOpacity onPress={()=>{
-                        setSearchInput('')
-                        context.setSearchTerm ? context.setSearchTerm('') : {}
-                    }}><FontAwesomeIcon style={styles.searchIcon} icon={faTimes} size={24} /></TouchableOpacity>}
-                
+
+                    {!context.searchTerm ? <FontAwesomeIcon style={styles.searchIcon} icon={faSearch} size={24} /> :
+                        <TouchableOpacity onPress={() => {
+                            setSearchInput('')
+                            context.setSearchTerm ? context.setSearchTerm('') : {}
+                        }}><FontAwesomeIcon style={styles.searchIcon} icon={faTimes} size={24} /></TouchableOpacity>}
+
                 </Animated.View>
             </View>
             <View style={{ flex: 1 }}>

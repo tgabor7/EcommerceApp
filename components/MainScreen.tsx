@@ -1,6 +1,7 @@
+import { useFocusEffect } from "@react-navigation/core"
 import { StatusBar } from "expo-status-bar"
-import React from "react"
-import { BackHandler, Platform, StyleSheet, Text, TouchableOpacity, View } from "react-native"
+import React, { useEffect, useState } from "react"
+import { Alert, BackHandler, Platform, StyleSheet, Text, ToastAndroid, TouchableOpacity, View } from "react-native"
 import ActionButton from "./ActionButton"
 import NavigationBar from "./NavigationBar"
 import ProductList from "./ProductList"
@@ -11,6 +12,31 @@ interface Props {
 }
 
 export default (props: Props) => {
+
+  const [quit, setQuit] = useState<boolean>(false)
+
+  const handleBackPress = ()=>{
+    if(quit){
+      BackHandler.exitApp()
+    }else{
+      setQuit(true)
+      ToastAndroid.show('Press back again to close app', ToastAndroid.SHORT)
+      setTimeout(()=>{
+        setQuit(false)
+      }, 500)
+      return true
+    }
+    return true
+    
+}
+  useFocusEffect(()=>{
+    BackHandler.addEventListener('hardwareBackPress', handleBackPress)
+    return () => {
+        BackHandler.removeEventListener('hardwareBackPress', handleBackPress)
+    }
+  })
+
+
   return (<>
 
     <View style={styles.container}>
@@ -21,7 +47,6 @@ export default (props: Props) => {
       <ProductList navigation={props.navigation} />
     </View>
     <ActionButton navigation={props.navigation} />
-
   </>)
 }
 

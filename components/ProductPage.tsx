@@ -1,3 +1,4 @@
+import { useFocusEffect } from "@react-navigation/core"
 import React, { useEffect, useRef, useState } from "react"
 import { Animated, BackHandler, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import NumberInput from "./NumberInput"
@@ -24,14 +25,14 @@ export default (props: Props) => {
         return true
     }
 
-    useEffect(()=>{
+    useFocusEffect(()=>{
         if(context.current) props.navigation.setOptions({title: context.current?.product.name})
 
         BackHandler.addEventListener('hardwareBackPress', handleBackPress)
         return () => {
             BackHandler.removeEventListener('hardwareBackPress', handleBackPress)
         }
-    }, [context.current])
+    })
 
     return (<>
         <View>
