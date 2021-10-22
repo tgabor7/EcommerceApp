@@ -4,12 +4,12 @@ import ProductItem, { Product } from "./ProductItem"
 import ProductContext, { useProduct } from "./ProductContext"
 import useProductAPI from "../hooks/useProductAPI"
 
-interface Props{
+interface Props {
     navigation: any
 }
 
-export default (props: Props)=>{
-    
+export default (props: Props) => {
+
     const [items, setItems] = useState<Array<Product>>()
 
     const [data, loading, reload] = useProductAPI()
@@ -21,33 +21,38 @@ export default (props: Props)=>{
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
         reload()
-        setInterval(()=>{
+        setInterval(() => {
             setRefreshing(false)
-        },2000)
-      }, []);
+        }, 2000)
+    }, []);
 
-    useEffect(()=>{
+    useEffect(() => {
         setItems(data)
-    },[loading])
+    }, [loading])
 
     return (<>
         {!loading ? <View style={styles.cards}>
-            <Text style={{marginLeft: 'auto', marginRight: 'auto', marginTop: 50}}>{"Showing " + items?.filter((p:Product)=>{
-                if(context.searchTerm) return p.name.includes(context.searchTerm)
-                return true
-             }).length + " result(s)"}</Text>
-            <FlatList 
-            refreshControl={
-                <RefreshControl
-                  refreshing={refreshing}
-                  onRefresh={onRefresh}
-                />
-            }contentContainerStyle={styles.container} windowSize={5} maxToRenderPerBatch={5} initialNumToRender={5} keyExtractor={(item, index)=> {return index.toString()} }
-             data={items?.filter((p:Product)=>{
-                if(context.searchTerm) return p.name.includes(context.searchTerm)
-                return true
-             })} renderItem={({item, index}) =><ProductItem navigation={props.navigation} product={item} index={index}></ProductItem>}></FlatList>
-        </View>:<ActivityIndicator size="large" color="#000"/>}
+            <View style={{flexDirection: "row"}}>
+                <Text style={{ marginLeft: 'auto', marginRight: 'auto', marginTop: 50 }}>{"Showing " + items?.filter((p: Product) => {
+                    if (context.searchTerm) return p.name.includes(context.searchTerm)
+                    return true
+                }).length + " result(s)"}</Text>
+                <TouchableOpacity>
+                    <Text style={{marginTop: 50, marginRight: 10, borderBottomWidth: 1, borderColor: '#ddd'}}>Sort: date</Text>
+                </TouchableOpacity>
+            </View>
+            <FlatList
+                refreshControl={
+                    <RefreshControl
+                        refreshing={refreshing}
+                        onRefresh={onRefresh}
+                    />
+                } contentContainerStyle={styles.container} windowSize={5} maxToRenderPerBatch={5} initialNumToRender={5} keyExtractor={(item, index) => { return index.toString() }}
+                data={items?.filter((p: Product) => {
+                    if (context.searchTerm) return p.name.includes(context.searchTerm)
+                    return true
+                })} renderItem={({ item, index }) => <ProductItem navigation={props.navigation} product={item} index={index}></ProductItem>}></FlatList>
+        </View> : <ActivityIndicator size="large" color="#000" />}
     </>)
 }
 const styles = StyleSheet.create({

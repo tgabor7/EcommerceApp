@@ -1,5 +1,5 @@
 import React, { useEffect } from "react"
-import { Alert, Dimensions, Modal, Platform, Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native"
+import { Alert, Dimensions, Image, Modal, Platform, Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import AvailableComponent from "./AvailableComponent"
 import ProductContext, { ProductRecord, useProduct } from "./ProductContext"
 import RatingComponent from "./RatingComponent"
@@ -73,9 +73,8 @@ export default (props: Props) => {
                 <Text style={styles.description}>{
                     props.product.description ? (props.product.description.length < MAX_DESCRIPTION_LENGTH ? props.product.description : props.product.description.slice(0, MAX_DESCRIPTION_LENGTH) + '...') : 'No description available.'
                 }</Text>
-                <View style={styles.image}>
+                <Image style={styles.image} source={{uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRMjXG6-2kgAO7WTwnWr7KncS3g5L9ScBn1sQ&usqp=CAU'}}></Image>
                     <AvailableComponent available={props.product.available} style={styles.available}></AvailableComponent>
-                </View>
             </TouchableOpacity>
             <Text style={styles.price}>{props.product.price + '$'}</Text>
             <TouchableOpacity style={styles.button} onPress={() => {
@@ -176,7 +175,6 @@ export const styles = StyleSheet.create({
     image: {
         width: '100%',
         height: 400,
-        backgroundColor: '#0f0',
         margin: 'auto'
     }
 })

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import ShoppingCart from './components/ShoppingCart';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -12,12 +12,15 @@ import SplashScreen from './components/SplashScreen';
 import SubmitProduct from './components/SubmitProduct';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import NavigationDrawer from './components/NavigationDrawer';
+import AuthProvider from './components/AuthContext';
+import SignUpPage from './components/SignUpPage';
 
 export default function App() {
 
   const Stack = createStackNavigator()
   const context = useProduct()
   const [openDrawer, setOpenDrawer] = useState(false)
+  const navigationContainer = useRef(null)
 
   const CartTrasition: StackNavigationOptions = {
     gestureDirection: 'horizontal',
@@ -82,19 +85,21 @@ export default function App() {
   }
 
   return (<>
-
-    <ProductContext>
-      <NavigationContainer>
-        <Stack.Navigator>
-          <Stack.Screen name="Splash" component={SplashScreen} options={{ headerShown: false }} />
-          <Stack.Screen name="Main" component={MainScreen} options={{ title: 'EcommerceApp', header: props => <CustomTitle openDrawer={setOpenDrawer} {...props} /> }} />
-          <Stack.Screen name="Cart" component={ShoppingCart} options={{ headerStyle: { backgroundColor: color.theme.secondary_color, borderBottomEndRadius: 10, borderBottomStartRadius: 10 }, ...CartTrasition }} />
-          <Stack.Screen name="Product" component={ProductPage} options={{ headerStyle: { backgroundColor: color.theme.secondary_color, borderBottomEndRadius: 10, borderBottomStartRadius: 10 }, ...ProductTransition }} />
-          <Stack.Screen name="Submit" component={SubmitProduct} options={{ headerStyle: { backgroundColor: color.theme.secondary_color, borderBottomEndRadius: 10, borderBottomStartRadius: 10 },}} />
-        </Stack.Navigator>
-      </NavigationContainer>
-    </ProductContext>
-    <NavigationDrawer open={openDrawer} setOpen={setOpenDrawer} />
+    <AuthProvider>
+      <ProductContext>
+        <NavigationContainer ref={navigationContainer}>
+          <Stack.Navigator>
+            <Stack.Screen name="Splash" component={SplashScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="Main" component={MainScreen} options={{ title: 'EcommerceApp', header: props => <CustomTitle openDrawer={setOpenDrawer} {...props} /> }} />
+            <Stack.Screen name="Cart" component={ShoppingCart} options={{ headerStyle: { backgroundColor: color.theme.secondary_color, borderBottomEndRadius: 10, borderBottomStartRadius: 10 }, ...CartTrasition }} />
+            <Stack.Screen name="Product" component={ProductPage} options={{ headerStyle: { backgroundColor: color.theme.secondary_color, borderBottomEndRadius: 10, borderBottomStartRadius: 10 }, ...ProductTransition }} />
+            <Stack.Screen name="Submit" component={SubmitProduct} options={{ headerStyle: { backgroundColor: color.theme.secondary_color, borderBottomEndRadius: 10, borderBottomStartRadius: 10 }, }} />
+            <Stack.Screen name="Signup" component={SignUpPage} options={{ headerStyle: { backgroundColor: color.theme.secondary_color, borderBottomEndRadius: 10, borderBottomStartRadius: 10 }, }} />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </ProductContext>
+      <NavigationDrawer navigation={navigationContainer} open={openDrawer} setOpen={setOpenDrawer} />
+    </AuthProvider>
   </>
   );
 }

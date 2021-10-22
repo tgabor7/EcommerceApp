@@ -7,7 +7,7 @@ import { TouchableOpacity } from "react-native-gesture-handler"
 import color from '../assets/style.json'
 import DrawerContent from "./DrawerContent"
 
-export default ({ open, setOpen }: any) => {
+export default ({ open, setOpen,navigation }: any) => {
 
     const value = useRef(new Animated.Value(0)).current
 
@@ -84,7 +84,7 @@ export default ({ open, setOpen }: any) => {
                 }}>
                     <FontAwesomeIcon icon={faArrowLeft} size={24} />
                 </TouchableOpacity>
-                <DrawerContent />
+                <DrawerContent setOpen={setOpen} navigation={navigation} />
             </Animated.View></>}
     </>)
 }
