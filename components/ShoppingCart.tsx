@@ -14,7 +14,8 @@ interface Props {
 
 export default (props: Props) => {
 
-    const [items, setItems] = useState<Array<ProductRecord>>()
+    const [items, setItems] = useState<Array<ProductRecord>>([])
+
     const getCart = async () => {
         try {
             const value = await AsyncStorage.getItem('cart');

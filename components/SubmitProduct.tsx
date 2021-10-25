@@ -1,15 +1,23 @@
+import { getAuth, sendEmailVerification } from "@firebase/auth"
 import { faTimes } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome"
 import React, { useEffect, useState } from "react"
 import { BackHandler, Button, StyleSheet, Text, View, ScrollView, TextInput, TouchableOpacity, Alert } from "react-native"
 import color from '../assets/style.json'
-import { styles } from "./ProductItem"
+import { useAuth } from "./AuthContext"
+import { Product, styles } from "./ProductItem"
+import axios from "axios"
+import usePost from "../hooks/usePost"
 
 export default ({ navigation }: any) => {
 
     const [price, setPrice] = useState<number>(0)
     const [name, setName] = useState<string>('')
     const [description, setDescription] = useState<string>('')
+
+    const { currentUser } = useAuth()
+
+    const [loading, callAPI] = usePost("https://ecommerceappbackend1.herokuapp.com/api/post")
 
     const handleBackPress = () => {
         navigation.navigate('Main')
@@ -61,7 +69,32 @@ export default ({ navigation }: any) => {
                         </View>
                     </TouchableOpacity>
                     <TouchableOpacity style={pageStyles.submit} onPress={() => {
-                            Alert.alert('Not implemented yet!')
+
+                        if(name.length <= 0) return
+                        if(description.length <= 0) return
+
+                        currentUser.getIdToken(true).then((idToken: any) => {
+                            
+                            callAPI({'auth': idToken }, {key: 0,name: name, description: description, price: price, available: true, rating: 1}).then(()=>{
+                                navigation.navigate("Main")
+                            })
+
+                            // axios.post<Product, {data: string}>("http://192.168.1.10:3000/api/post", {key: 0,name: name, description: description, price: price, available: true, rating: 1}, {
+                            //     headers: {
+                            //         'auth': idToken
+                            //     }
+                            // }).then(response => {
+                            //     if(response.data === "Success!") {
+                            //         navigation.navigate("Main")
+                            //     }
+                            // }).catch(err => {
+                            //     console.log(err)
+                            // })
+                        }).catch((error: any) => {
+                            console.log(error)
+                        })
+
+
                     }}>
                         <View style={pageStyles.submit}>
                             <Text style={[pageStyles.text, { marginLeft: 'auto' }]}>Submit</Text>

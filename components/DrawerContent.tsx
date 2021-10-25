@@ -6,7 +6,7 @@ import AuthProvider, { useAuth } from "./AuthContext"
 
 export default ({ navigation, setOpen }: any) => {
 
-    const { currentUser } = useAuth()
+    const { currentUser,logout } = useAuth()
 
     //emial format, password at least 6 characters
     return (<>
@@ -14,13 +14,14 @@ export default ({ navigation, setOpen }: any) => {
             <View style={styles.profile}>
 
             </View>
-            <Text>{currentUser ? "Logged in as : " +currentUser.email : ''}</Text>
+            <Text style={{fontSize: 24, marginLeft: 'auto', marginRight: 'auto'}}>{currentUser ? currentUser.email : ''}</Text>
             {!currentUser ? <TouchableOpacity style={styles.button} onPress={() => {
                 navigation.current.navigate("Signup")
                 setOpen(false)
             }}>
                 <Text style={{ fontSize: 24 }}>Sign up!</Text>
             </TouchableOpacity> : <TouchableOpacity style={styles.button} onPress={() => {
+                logout()
             }}>
                 <Text style={{ fontSize: 24 }}>Log out!</Text>
             </TouchableOpacity>}
