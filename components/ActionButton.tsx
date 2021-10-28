@@ -1,6 +1,5 @@
-import { Animated, BackHandler, Dimensions, StyleSheet, View } from "react-native"
+import { Animated, BackHandler, Dimensions, StyleSheet, TouchableOpacity, View } from "react-native"
 import React, { useEffect, useRef, useState } from "react"
-import { TouchableOpacity } from "react-native-gesture-handler"
 import color from '../assets/style.json'
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome"
 import { faPlus } from "@fortawesome/free-solid-svg-icons"

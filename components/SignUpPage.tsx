@@ -1,9 +1,7 @@
 import React, { useState } from "react"
-import { StyleSheet, Text, TextInput, View } from "react-native"
-import { TouchableOpacity } from "react-native-gesture-handler"
+import { StyleSheet, Text, TextInput, View, TouchableOpacity } from "react-native"
 import color from '../assets/style.json'
 import { useAuth } from "./AuthContext"
-
 
 
 export const validateEmail = (email: string) => {
@@ -108,8 +106,8 @@ export default ({ navigation }: any) => {
                         navigation.navigate('Main')
                     }).catch(error => {
                         console.log(error.code)
-                        if(error.code === 'auth/user-not-found') setEmailError("User not found!")
-                        if(error.code === 'auth/wrong-password') setPasswordError("Incorrect password!")
+                        if (error.code === 'auth/user-not-found') setEmailError("User not found!")
+                        if (error.code === 'auth/wrong-password') setPasswordError("Incorrect password!")
                     })
                 }} style={[styles.button]}>
                     <Text style={styles.p}>Login</Text>

@@ -9,7 +9,8 @@
     "eject": "expo eject"
   },
   "jest": {
-    "preset": "react-native"
+    "preset": "react-native",
+    "setupFiles": ["./jestSetup.js"]
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.36",
@@ -28,7 +29,6 @@
     "react-dom": "16.13.1",
     "react-native": "https://github.com/expo/react-native/archive/sdk-42.0.0.tar.gz",
     "react-native-dotenv": "^3.2.0",
-    "react-native-gesture-handler": "~1.10.2",
     "react-native-navigation-bar": "^0.2.1",
     "react-native-reanimated": "^2.2.2",
     "react-native-safe-area-context": "3.2.0",

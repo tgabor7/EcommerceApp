@@ -2,8 +2,7 @@ import { faArrowLeft } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome"
 import { useFocusEffect } from "@react-navigation/core"
 import React, { useEffect, useRef, useState } from "react"
-import { Animated, BackHandler, StyleSheet, Text, View } from "react-native"
-import { TouchableOpacity } from "react-native-gesture-handler"
+import { Animated, BackHandler, StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import color from '../assets/style.json'
 import DrawerContent from "./DrawerContent"
 

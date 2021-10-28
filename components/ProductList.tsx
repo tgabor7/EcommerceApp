@@ -9,6 +9,13 @@ interface Props {
     navigation: any
 }
 
+export const namesort = (n: Product, m:  Product)=>{
+    return n.name.toUpperCase() > m.name.toUpperCase() ? 1 : -1
+}
+export const pricesort = (n:Product, m:Product)=>{
+    return n.price > m.price ? 1 : -1
+}
+
 export default (props: Props) => {
 
     const list = useRef<FlatList>(null)
@@ -32,7 +39,7 @@ export default (props: Props) => {
     }, []);
 
     useEffect(() => {
-        setItems(data)
+        setItems(data?.sort(pricesort))
     }, [loading])
 
     return (<>
@@ -48,10 +55,10 @@ export default (props: Props) => {
                     onValueChange={(value, index) => {
                         switch (value) {
                             case ('price'):
-                                setItems(items?.sort((n: Product, m: Product) => n.price > m.price ? 1 : -1))
+                                setItems(items?.sort(pricesort))
                                 break;
                             case ('name'):
-                                setItems(items?.sort((n: Product, m: Product) => n.name > m.name ? 1 : -1))
+                                setItems(items?.sort(namesort))
 
                                 break;
                         }
@@ -80,7 +87,7 @@ export default (props: Props) => {
                         refreshing={refreshing}
                         onRefresh={onRefresh}
                     />
-                } contentContainerStyle={styles.container} windowSize={5} maxToRenderPerBatch={5} initialNumToRender={5} keyExtractor={(item, index) => { return index.toString() }}
+                } contentContainerStyle={styles.container} windowSize={5} initialNumToRender={5} keyExtractor={(item, index) => { return index.toString() }}
                 data={items?.filter((p: Product) => {
                     if (context.searchTerm) return p.name.includes(context.searchTerm)
                     return true
@@ -97,7 +104,7 @@ const styles = StyleSheet.create({
         marginTop: 0
     },
     container: {
-        paddingTop: 100,
+        paddingTop: 0,
         paddingBottom: 100
     },
     hidden: {
