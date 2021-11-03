@@ -6,7 +6,7 @@ import { Animated, BackHandler, StyleSheet, Text, TouchableOpacity, View } from 
 import color from '../assets/style.json'
 import DrawerContent from "./DrawerContent"
 
-export default ({ open, setOpen,navigation }: any) => {
+export default ({ open, setOpen, navigation }: any) => {
 
     const value = useRef(new Animated.Value(0)).current
 

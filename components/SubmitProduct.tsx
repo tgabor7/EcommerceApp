@@ -1,19 +1,26 @@
 import { getAuth, sendEmailVerification } from "@firebase/auth"
-import { faTimes } from "@fortawesome/free-solid-svg-icons"
+import { faCross, faTimes } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome"
-import React, { useEffect, useState } from "react"
-import { BackHandler, Button, StyleSheet, Text, View, ScrollView, TextInput, TouchableOpacity, Alert } from "react-native"
+import React, { useEffect, useRef, useState } from "react"
+import { BackHandler, Button, StyleSheet, Text, View, ScrollView, TextInput, TouchableOpacity, Alert, Image } from "react-native"
 import color from '../assets/style.json'
 import { useAuth } from "./AuthContext"
 import { Product, styles } from "./ProductItem"
 import axios from "axios"
 import usePost from "../hooks/usePost"
+import DocumentPicker from 'react-native-document-picker'
+import * as ImagePicker from 'expo-image-picker'
+
+export const prepareMessage = (product: Product) => {
+
+}
 
 export default ({ navigation }: any) => {
 
     const [price, setPrice] = useState<number>(0)
     const [name, setName] = useState<string>('')
     const [description, setDescription] = useState<string>('')
+    const [images, setImages] = useState<any[]>([])
 
     const { currentUser } = useAuth()
 
@@ -30,6 +37,7 @@ export default ({ navigation }: any) => {
             BackHandler.removeEventListener('hardwareBackPress', handleBackPress)
         }
     }, [])
+
 
     return (<>
         <View style={pageStyles.container}>
@@ -58,7 +66,50 @@ export default ({ navigation }: any) => {
                         setDescription(e)
                     }} multiline={true} style={[pageStyles.input, { textAlignVertical: 'top', height: 200 }]} placeholder={"description"} />
                 </View>
+                <View style={pageStyles.field}>
+                    <TouchableOpacity onPress={async () => {
+                        let result = await ImagePicker.launchImageLibraryAsync({
+                            mediaTypes: ImagePicker.MediaTypeOptions.All,
+                            allowsEditing: true,
+                            aspect: [4, 3],
+                            quality: 1,
+                        });
 
+
+                        if (!result.cancelled) {
+                            // var formData = new FormData();
+                            // var value : unknown = { uri: result.uri, name: 'image.jpg', type: 'image/jpeg' }
+                            // formData.append('file', value as Blob)
+                            // axios.post("http://192.168.1.8:3000/api/post", formData, {headers: {
+                            //     'auth': 'adawd'
+                            // }}).then(res=>{
+                            //     console.log(res)
+                            // }).catch(err=>{
+                            //     console.log(err)
+                            // })
+                            setImages(images.concat([result.uri]))
+                        }
+                    }}>
+                        <Text>pick images</Text>
+                    </TouchableOpacity>
+                    <View style={{ flexDirection: 'row', flexWrap: 'wrap', backgroundColor: '#f0f', padding: 10 }}>
+                        {images?.map((e: string, index: number) => {
+                            return <View key={index} >
+                                <View style={{ position: 'absolute', zIndex: 1, elevation: 1 }}>
+                                    <TouchableOpacity onPress={()=>{
+                                        setImages(images.filter((e,i)=>{
+                                            return i !== index
+                                        }))
+                                    }}>
+                                        <FontAwesomeIcon icon={faTimes} size={24} />
+                                    </TouchableOpacity>
+                                </View>
+
+                                <Image style={{ width: 100, height: 100 }} source={{ uri: e }}></Image>
+                            </View>
+                        })}
+                    </View>
+                </View>
                 <View style={pageStyles.innerContainer}>
 
                     <TouchableOpacity style={pageStyles.cancel} onPress={() => {
@@ -70,12 +121,12 @@ export default ({ navigation }: any) => {
                     </TouchableOpacity>
                     <TouchableOpacity style={pageStyles.submit} onPress={() => {
 
-                        if(name.length <= 0) return
-                        if(description.length <= 0) return
+                        if (name.length <= 0) return
+                        if (description.length <= 0) return
 
                         currentUser.getIdToken(true).then((idToken: any) => {
-                            
-                            callAPI({'auth': idToken }, {key: 0,name: name, description: description, price: price, available: true, rating: 1}).then(()=>{
+
+                            callAPI({ 'auth': idToken }, { key: 0, name: name, description: description, price: price, available: true, rating: 1 }).then(() => {
                                 navigation.navigate("Main")
                             })
 
@@ -142,7 +193,8 @@ const pageStyles = StyleSheet.create({
     },
     innerContainer: {
         flexDirection: "row",
-        marginTop: 50
+        marginTop: 50,
+        paddingBottom: 50,
     },
     text: {
         fontSize: 24,
